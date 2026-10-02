@@ -1,5 +1,5 @@
 // deploy.bat updates VERSION automatically on every upload
-const VERSION='20261002212223';
+const VERSION='20261002215619';
 const CACHE='lmtg-'+VERSION;
 const FILES=['./','./index.html','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/icon-maskable-512.png','./icons/apple-touch-icon.png'];
 

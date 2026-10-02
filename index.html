@@ -109,7 +109,7 @@ input[type=range]{width:100%;accent-color:var(--yellow)}
     </div>
     <div class="grid" id="grid"></div>
     <div class="row"><button class="btn ghost sm" id="calBtn">🎧 延遲校正</button></div>
-    <p class="foot">20 關鋁模工作，從組模到收工喝飲料<br>點畫面任何地方都算一下・建議戴耳機<br>iPhone 請先關閉靜音模式才聽得到聲音</p>
+    <p class="foot">21 關鋁模工作＋隨機五連發，從組模到收工喝飲料<br>點畫面任何地方都算一下・建議戴耳機<br>iPhone 請先關閉靜音模式才聽得到聲音</p>
   </section>
 
   <section id="intro" class="screen">
@@ -260,6 +260,9 @@ function cueSnd(s,t,o){switch(s){
   case 'shang':voice(o,t,250,230,550,1000,.12,1.8);voice(o,t+.14,300,360,650,1300,.14,1.8);break;
   case 'gan':voice(o,t,230,250,750,1250,.3,1.8);break;
   case 'bei':voice(o,t,300,330,450,2000,.15,1.8);break;
+  case 'da':voice(o,t,250,230,650,1300,.12,1.8);noise(o,t,.05,.2,'highpass',3000);break;
+  case 'dalong':voice(o,t,230,170,650,1300,.48,1.8);break;
+  case 'diu':voice(o,t,320,300,350,2200,.1,1.8);break;
   case 'gulu':osc(o,t,'sine',320,.08,.4,.004,150);osc(o,t+.1,'sine',260,.08,.35,.004,120);break;
 }}
 /* 玩家動作音 */
@@ -283,6 +286,8 @@ function hitSnd(k,t,o,v=1){switch(k){
   case 'fill':noise(o,t,.1,.7*v,'lowpass',500);osc(o,t,'sine',160,.1,.5*v,.002,60);noise(o,t+.03,.06,.2*v,'bandpass',1500,2);break;
   case 'squeeze':noise(o,t,.22,.45*v,'bandpass',900,3,400);osc(o,t,'sine',500,.18,.12*v,.004,250);osc(o,t,'square',900,.02,.12*v);break;
   case 'clink':osc(o,t,'sine',2093,.4,.25*v);osc(o,t,'sine',3136,.3,.15*v);osc(o,t,'sine',4186,.15,.08*v);break;
+  case 'breaker':for(let i=0;i<4;i++){noise(o,t+i*.03,.025,.55*v,'bandpass',900,1.5);osc(o,t+i*.03,'square',120,.02,.12*v);}osc(o,t,'sine',90,.12,.4*v,.002,50);break;
+  case 'chug':osc(o,t,'sine',300,.07,.5*v,.004,120);osc(o,t+.06,'sine',260,.07,.45*v,.004,110);noise(o,t+.12,.2,.35*v,'bandpass',900,1,3000);break;
   case 'gulp':osc(o,t,'sine',280,.12,.55*v,.004,110);noise(o,t,.05,.2*v,'lowpass',600);break;
 }}
 const missSnd=(o,t)=>{osc(o,t,'sawtooth',180,.28,.1,.005,90);osc(o,t+.08,'square',140,.25,.06,.005,70);};
@@ -415,21 +420,46 @@ const LEVELS=[
   patterns:{A:{extra:[[0,'knock']],notes:[{c:1,h:2,s:'knock'}]},B:{extra:[[0,'knock'],[1,'knock']],notes:[{c:2,h:3,s:'knock'}]},C:{extra:[[0,'knock']],notes:[{c:1,h:2,s:'knockhi',k:'T'},{c:1,h:2.5,k:'T'}]}},
   chart:'dA A A - dB A B - A A B - dC A C - B C A B - C B C',
   comments:['牆板一片片倒下，拆模大師！','拆是拆了，有幾片差點壓到人。','牆板倒得亂七八糟……小心腳！']},
- {id:'water',scene:'water',name:'傳整箱礦泉水',en:'Water Relay',bpm:104,color:'#2fa8e0',hit:'catch',music:mus('q',171),
-  rule:'樓下一排人「嘿、嘿」把整箱礦泉水傳過來，最後一個喊<b>「上去！」，下一拍</b>在頂樓接住。<br>有時候傳得快、有時候直接丟，只要聽「上去！」就對了。',
-  patterns:{A:{extra:[[0,'hei'],[1,'hei']],notes:[{c:2,h:3,s:'shang',k:'c2'}]},B:{extra:[[0,'hei'],[.5,'hei']],notes:[{c:1,h:2,s:'shang',k:'c1'}]},C:{notes:[{c:0,h:1,s:'shang',k:'c0'},{c:2,h:3,s:'shang',k:'c0'}]}},
-  chart:'dA A A - dB A B - A B A - dC A C - B C A B C',
-  comments:['一箱都沒摔，頂樓水量充足！','接到大部分，有一兩箱摔破了。','礦泉水灑滿地……大家都要渴死了。']},
- {id:'drink',scene:'drink',name:'喝飲料',en:'Break Time!',bpm:96,color:'#f2a03d',hit:'clink',music:mus('l',181),
-  rule:'收工休息！同事喊「乾～」，<b>「杯」的下一拍</b>碰杯。<br>同事「咕嚕」喝幾口，<b>兩拍後</b>你照著他的節奏喝（模仿）。',
-  patterns:{A:{extra:[[0,'gan']],notes:[{c:1,h:2,s:'bei'}]},B:{notes:[{c:0,h:2,s:'gulu',hs:'gulp'},{c:.5,h:2.5,s:'gulu',hs:'gulp'}]},C:{notes:[{c:0,h:2,s:'gulu',hs:'gulp'},{c:.5,h:2.5,s:'gulu',hs:'gulp'},{c:1,h:3,s:'gulu',hs:'gulp'}]}},
+ {id:'chisel',scene:'chisel',name:'打石',en:'Chip It Off',bpm:112,color:'#8a8580',hit:'breaker',music:mus('o',191),
+  rule:'拆模後牆上有凸出來的混凝土。同事用粉筆圈起來喊「打！」，<b>下一拍開始，半拍一下連打兩下</b>。<br>大塊的喊「打～～」（長音），要<b>半拍一下連打四下</b>。',
+  patterns:{A:{notes:[{c:0,h:1,s:'da'},{c:0,h:1.5}]},B:{notes:[{c:0,h:1,s:'dalong',k:'big'},{c:0,h:1.5,k:'big'},{c:0,h:2,k:'big'},{c:0,h:2.5,k:'big'}]},
+            C:{notes:[{c:0,h:1,s:'da'},{c:0,h:1.5},{c:2,h:3,s:'da'},{c:2,h:3.5}]}},
   chart:'dA A A - dB A B - A B A - dC A C - B C A C',
-  comments:['乾杯！今天辛苦了，明天繼續！','喝是喝到了，灑了一點。','飲料都灑在臉上了……']},
+  comments:['牆面打得平平整整，泥作師傅都說讚！','大部分打掉了，還有幾塊凸凸的。','打得坑坑洞洞……整面牆都是灰。']},
+ {id:'water',scene:'water',name:'傳整箱礦泉水',en:'Water Relay',bpm:104,color:'#2fa8e0',hit:'catch',music:mus('q',171),
+  rule:'樓下一排人「嘿、嘿」把整箱礦泉水傳過來，最後一個喊<b>「上去！」，下一拍</b>在頂樓接住。<br>他如果喊<b>「丟丟丟！」</b>就是連丟三箱：每箱都是<b>丟出後一拍到</b>，你要<b>接接接</b>連按三下。「丟丟」就是兩箱。',
+  patterns:{A:{extra:[[0,'hei'],[1,'hei']],notes:[{c:2,h:3,s:'shang',k:'c2'}]},B:{extra:[[0,'hei'],[.5,'hei']],notes:[{c:1,h:2,s:'shang',k:'c1'}]},
+            C:{notes:[{c:0,h:1,s:'diu',k:'c0'},{c:.5,h:1.5,s:'diu',k:'c0'},{c:1,h:2,s:'diu',k:'c0'}]},D:{notes:[{c:0,h:1,s:'diu',k:'c0'},{c:.5,h:1.5,s:'diu',k:'c0'}]}},
+  chart:'dA A A - dB A B - dC A C - dD C D - B C A C',
+  comments:['一箱都沒摔，頂樓水量充足！','接到大部分，有一兩箱摔破了。','礦泉水灑滿地……大家都要渴死了。']},
+ {id:'drink',scene:'drink',name:'喝飲料',en:'Chug & Toss!',bpm:104,color:'#f2a03d',hit:'chug',music:mus('l',181),
+  rule:'收工休息！同事喊「乾！」遞一杯過來，<b>下一拍</b>一口灌完、馬上往後丟！<br>「乾乾」「乾乾乾」連遞的，就<b>灌完丟、灌完丟、灌完丟</b>，半拍一杯。',
+  patterns:{A:{notes:[{c:0,h:1,s:'gan'},{c:2,h:3,s:'gan'}]},B:{notes:[{c:0,h:1,s:'gan'},{c:.5,h:1.5,s:'gan'}]},C:{notes:[{c:0,h:1,s:'gan'},{c:.5,h:1.5,s:'gan'},{c:1,h:2,s:'gan'}]}},
+  chart:'dA A A - dB A B - A B A - dC A C - B C A C',
+  comments:['一杯接一杯，灌完丟灌完丟，海量！','喝是喝到了，灑了一點。','飲料都噴在臉上了……']},
+ {id:'random',scene:'remix',remix:true,random:true,name:'隨機綜合五連發',en:'Random Mix',bpm:112,color:'#ffd21f',hit:'clang',music:mus('a',201),
+  rule:'每次開工都從前面 21 關<b>隨機抽 5 關</b>串在一起，不會再示範！<br>畫面一換，馬上切換腦袋。每次玩的組合都不一樣。',
+  patterns:{},chart:'',
+  comments:['ゴゴゴゴ……什麼工項都難不倒你！','合格！可以帶新人了。','還需要多跟師傅學學……']},
 ];
 const CUE_TXT={ding:'叮！',hei:'嘿！',yo:'喲～！',shoo:'咻！',one:'一！',two:'二！',three:'三！',ka:'喀！',turn:'轉！',turnhi:'轉！！',big:'嗡～',small:'嗶！',
   push:'穿！',pushlong:'穿～～',tick:'鏘！',bell:'叮咚',bellhi:'叮咚！',knock:'叩！',knockhi:'叩！！',here:'這！',
-  beep:'嗶！',zhuan:'轉！',zhuanlong:'轉～～',zhuanfast:'快轉！',qi:'起！',look:'看！',looklong:'看～～',suo:'鎖！',tui:'推！',shang:'上去！',gan:'乾～',bei:'杯！',gulu:'咕嚕'};
+  beep:'嗶！',zhuan:'轉！',zhuanlong:'轉～～',zhuanfast:'快轉！',qi:'起！',look:'看！',looklong:'看～～',suo:'鎖！',tui:'推！',shang:'上去！',gan:'乾！',bei:'杯！',gulu:'咕嚕',da:'打！',dalong:'打～～',diu:'丟！'};
 const SHOUTS=['什麼？！','怎麼可能！！','我的腳！！','欸欸欸！！','你在幹嘛啦！','吼～～！','救命啊！！'];
+
+/* 隨機五連發：每次開工重新抽 */
+function genRandomChart(){
+  const pool=LEVELS.filter(L=>!L.remix).map(L=>L.id);
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  const toks=[];
+  pool.slice(0,5).forEach((id,k)=>{
+    const L=LEVELS.find(x=>x.id===id),keys=Object.keys(L.patterns);
+    for(let j=0;j<3;j++)toks.push(id+'.'+keys[Math.floor(Math.random()*keys.length)]);
+    if(k<4)toks.push('-');
+  });
+  return toks.join(' ');
+}
+LEVELS.forEach(L=>{if(L.random)L.chart=genRandomChart();});
 /* ================= 譜面、音樂、背景事件 ================= */
 function buildChart(li){
   const L=LEVELS[li],toks=L.chart.trim().split(/\s+/),remix=!!L.remix;
@@ -1279,7 +1309,7 @@ SCENES.silicone={bub:[90,580],head:()=>[50,515],
         else if(n.c-2<=B){c.strokeStyle='rgba(255,210,31,.9)';c.lineWidth=3;c.beginPath();c.arc(x,y,18+Math.sin(B*12)*2,0,Math.PI*2);c.stroke();}}
       c.restore();};
     const dk=B-doneT(k);
-    if(dk>0){board(k,-460*easeIn(clamp(dk/.5)));if(k+1<nC)board(k+1,460*(1-easeOutBack(clamp((dk-.2)/.6))));}else board(k,0);
+    if(dk>0&&k+1<nC){board(k,-460*easeIn(clamp(dk/.5)));board(k+1,460*(1-easeOutBack(clamp((dk-.2)/.6))));}else board(k,0);
     const nn=nextNote(X,B),[tx,ty]=nn&&B>nn.c-2.2?this.pos(nn):[300,560];
     c.save();c.globalAlpha=.35;c.fillStyle='#fff8b0';c.beginPath();c.moveTo(78,470);c.lineTo(tx-22,ty-22);c.lineTo(tx+22,ty+22);c.closePath();c.fill();c.restore();
     worker(50,640,1,P(B,X,{ra:-2}));c.fillStyle='#333';c.strokeStyle=OUT;c.lineWidth=2;fsr(66,466,22,12,3);
@@ -1303,7 +1333,7 @@ SCENES.water={bub:[220,380],head:()=>[210,485],pos:()=>[320,250],
     c.fillStyle='#b9b4ab';c.strokeStyle=OUT;c.lineWidth=3;fsr(255,ROOF,260,400,0);c.fillStyle='#9fd3ff';for(let y=ROOF+50;y<620;y+=90){fsr(280,y,40,50,3);fsr(345,y,40,50,3);}
     c.fillStyle='#8f8a82';fsr(247,ROOF-8,280,12,2);
     const pj=st.pileB!=null?Math.max(0,1-(B-st.pileB)/.3):0;
-    for(let i=0;i<Math.min(st.pile,6);i++)waterBox(372,ROOF-24-i*34,0,i===Math.min(st.pile,6)-1?pj*.15:0);
+    const np=Math.min(st.pile,4);for(let i=0;i<np;i++)waterBox(372,ROOF-24-i*34,0,i===np-1?pj*.15:0);if(st.pile>4)txt('×'+st.pile,372,ROOF-170,18,'#fff',OUT,4);
     const hold=[0,0,0];
     for(const n of X.ns){
       const pre=n.k==='c2'?2:n.k==='c1'?1:0,t0=n.c-pre;
@@ -1324,34 +1354,86 @@ SCENES.water={bub:[220,380],head:()=>[210,485],pos:()=>[320,250],
     const r=reaching(X,B);worker(318,ROOF,.85,PO(B,X,{la:r?Math.PI/2+.2:Math.PI-.4,ra:r?Math.PI/2-.3:Math.PI+.4}));
   }};
 
-/* ---------- 20 喝飲料 ---------- */
+/* ---------- 19 打石 ---------- */
+SCENES.chisel={bub:[90,420],head:()=>[55,515],
+  cx(X,ph){return 200+ph*260-(X.st.scroll||0);},
+  groups(X){const st=X.st;if(!st.g){st.g=[];st.gOf=new Map();const by={};
+      for(const n of X.ns){const key=n.ph+'_'+n.c;(by[key]||(by[key]={ph:n.ph,c:n.c,ns:[],big:n.k==='big'})).ns.push(n);}
+      const perPh={};Object.values(by).forEach(g=>(perPh[g.ph]||(perPh[g.ph]=[])).push(g));
+      Object.values(perPh).forEach(arr=>{arr.sort((a,b)=>a.c-b.c);arr.forEach((g,i)=>{g.dx=arr.length===1?0:-62+i*124;g.last=g.ns.reduce((m,n)=>n.h>m.h?n:m);st.g.push(g);g.ns.forEach(n=>st.gOf.set(n,g));});});}
+    return st.g;},
+  pos(n,X){this.groups(X);const g=X.st.gOf.get(n);return[this.cx(X,g.ph)+g.dx,380];},
+  draw(B,X){
+    const st=X.st,R=X.R,G=this.groups(X);
+    const {sc}=phraseScroll(X,B,.4,.5);st.scroll=sc*260;
+    c.fillStyle='#a7a39c';c.fillRect(-600,-600,1600,1300);
+    c.fillStyle='rgba(0,0,0,.16)';for(let i=-2;i<8;i++){const x=((i*90-st.scroll*1)%720+720)%720-120;circ(x,200,5);circ(x+45,300,5);circ(x,470,5);circ(x+45,560,5);}
+    c.strokeStyle='rgba(0,0,0,.08)';c.lineWidth=2;for(let i=-2;i<8;i++){const x=((i*130-st.scroll)%910+910)%910-200;ln(x,90,x,620);}
+    ground(620,'#8f877b');
+    for(const g of G){
+      const x=this.cx(X,g.ph)+g.dx,y=380;if(x<-80||x>480)continue;
+      const N=g.ns.length,r0=g.big?48:32;let ok=0,bad=false;
+      for(const n of g.ns)if(n.res&&B>=n.rt){if(isOK(n))ok+=easeOut(clamp((B-n.rt)/.12));else bad=true;}
+      const done=g.last.res&&B>=g.last.rt,f=1-ok/N,r=r0*f;
+      c.fillStyle='rgba(0,0,0,.12)';circ(x,y,r0*.9);
+      if(r>1){c.fillStyle=bad&&done?'#b9a59a':'#bdb8ae';c.strokeStyle=OUT;c.lineWidth=2.5;c.beginPath();
+        for(let i=0;i<11;i++){const a=i/11*Math.PI*2,rr2=r*(.82+((i*7+g.ph*3)%5)*.07);c.lineTo(x+Math.cos(a)*rr2,y+Math.sin(a)*rr2*.85);}c.closePath();c.fill();c.stroke();
+        c.strokeStyle='rgba(0,0,0,.25)';c.lineWidth=1.5;ln(x-r*.4,y-r*.2,x+r*.1,y+r*.3);}
+      if(B>=g.c&&!(done&&!bad)){c.save();c.setLineDash([6,5]);c.strokeStyle='#fff';c.lineWidth=3;c.beginPath();c.ellipse(x,y,r0+12,(r0+12)*.85,0,0,Math.PI*2);c.stroke();c.restore();}
+      for(const n of g.ns){if(!isOK(n)||B<n.rt)continue;const d=B-n.rt;if(d>.6)continue;
+        for(let k=0;k<6;k++){const a=-Math.PI*.9+k*.35;c.save();c.translate(x+Math.cos(a)*d*160+d*60,y+Math.sin(a)*d*120+d*d*420);c.rotate(d*10+k);c.fillStyle='#bdb8ae';c.strokeStyle=OUT;c.lineWidth=1.5;fsr(-5,-4,10,8,2);c.restore();}
+        c.save();c.globalAlpha=1-d/.6;c.fillStyle='#e6e1d6';for(let k=0;k<4;k++)circ(x+20+k*14,y-10-d*60+k*4,10+d*30);c.restore();}
+      if(done&&!bad&&B-g.last.rt<.6)burst(x,y-60,'平了！',(B-g.last.rt)/.6);
+      if(bad&&done&&(st.gooB==null||st.gooB<g.last.rt))st.gooB=g.last.rt+.2;
+    }
+    const tk=talking(R,B);
+    worker(55,620,1,P(B,X,{ra:tk?-2.3:-1.4}));
+    if(tk){c.fillStyle='#fff';c.strokeStyle=OUT;c.lineWidth=1.5;fsr(96,452,14,6,2);}
+    const nn=nextNote(X,B);let tx=280,ty=420;if(nn&&B>nn.c-.6){const p=this.pos(nn,X),g=st.gOf.get(nn);tx=p[0]+(g.big?48:32)+4;ty=p[1];}
+    const s=B-R.lastSwing,hit=s>=0&&s<.25,jit=hit?Math.sin(B*160)*4:0,bad=recent(B,R.missB,.6)&&R.missLv===X.lv,bj=bad?Math.sin(B*120)*6:0;
+    st.tx=st.tx==null?tx:st.tx+(tx-st.tx)*.25;const toolX=st.tx+(hit?-8:4)+jit,toolY=ty+jit+bj;
+    worker(355+bj,620,1,PO(B,X,{}));
+    stretchArm(337+bj,530,toolX+118,toolY+8,'#ff6a13');stretchArm(373+bj,530,toolX+92,toolY+14,'#ff6a13');
+    c.save();c.translate(toolX,toolY);c.strokeStyle=OUT;c.lineWidth=2.5;
+    c.fillStyle='#999';fsr(0,-4,44,8,2);c.fillStyle='#e2452b';fsr(40,-16,72,32,8);c.fillStyle='#333';fsr(70,-20,22,6,2);
+    c.fillStyle='#1f1f1f';fsr(108,-24,12,48,4);c.fillStyle='#444';fsr(80,8,10,22,3);c.restore();
+    if(hit){c.strokeStyle=OUT;c.lineWidth=2;for(let k=0;k<3;k++)ln(toolX+60+k*10,toolY-28,toolX+66+k*10,toolY-38);txt('噠噠！',toolX+70,toolY-52,16,'#fff',OUT,4);}
+  }};
+
+/* ---------- 21 喝飲料（灌完丟） ---------- */
 function drinkCup(x,y,level,tilt){c.save();c.translate(x,y);c.rotate(tilt||0);c.strokeStyle=OUT;c.lineWidth=2.5;
   c.fillStyle='rgba(255,255,255,.75)';c.beginPath();c.moveTo(-14,-24);c.lineTo(14,-24);c.lineTo(11,22);c.lineTo(-11,22);c.closePath();c.fill();
-  const h=44*clamp(level);c.save();c.clip();c.fillStyle='#c98a4b';c.fillRect(-16,22-h,32,h);c.fillStyle='#3a2416';for(let i=0;i<5;i++)circ(-7+i*3.5,17-(i%2)*3,2.6);c.restore();
+  const h=44*clamp(level);c.save();c.clip();c.fillStyle='#c98a4b';c.fillRect(-16,22-h,32,h);if(level>.2){c.fillStyle='#3a2416';for(let i=0;i<5;i++)circ(-7+i*3.5,17-(i%2)*3,2.6);}c.restore();
   c.beginPath();c.moveTo(-14,-24);c.lineTo(14,-24);c.lineTo(11,22);c.lineTo(-11,22);c.closePath();c.stroke();
   c.fillStyle='#fff';fsr(-16,-28,32,6,2);c.strokeStyle='#e2452b';c.lineWidth=4;ln(3,-26,8,-46);c.restore();}
-SCENES.drink={bub:[110,390],head:()=>[110,445],pos:()=>[200,430],
+SCENES.drink={bub:[110,390],head:()=>[110,445],pos:()=>[250,470],
   draw(B,X){
     const st=X.st,R=X.R;
     sky(B,600);ground(600,'#c7ae86');
     c.fillStyle='#2f7de1';c.strokeStyle=OUT;c.lineWidth=3;c.beginPath();c.moveTo(-20,170);c.lineTo(420,150);c.lineTo(430,210);c.lineTo(-30,230);c.closePath();c.fill();c.stroke();
     c.strokeStyle='#8a8a8a';c.lineWidth=6;ln(20,225,20,600);ln(380,205,380,600);
-    c.fillStyle='#e2452b';c.strokeStyle=OUT;c.lineWidth=3;fsr(160,520,80,60,6);c.fillStyle='#fff';fsr(160,520,80,14,4);txt('冰',200,556,18,'#fff');
-    let pg=0,yg=0;for(const q of R.cues){if(q.beat>B)break;if(q.lv===X.lv&&q.s==='gulu')pg++;}
-    for(const n of X.ns)if(n.hs==='gulp'&&isOK(n)&&B>=n.rt)yg++;
-    const plv=1-((pg%8)/8),ylv=1-((yg%8)/8);
-    let cheer=null;for(const n of X.ns)if(!n.hs&&B>=n.c-.2&&(!n.res||B<n.rt+.5)){if(!cheer||n.c>cheer.c)cheer=n;}
-    let ext=0;if(cheer){if(!cheer.res||B<cheer.rt)ext=easeOut(clamp((B-cheer.c+.2)/(cheer.h-cheer.c+.2)));else ext=1-clamp((B-cheer.rt)/.5);}
-    const pdrink=talking(R,B)&&!cheer,s=B-R.lastSwing,ydrink=s>=0&&s<.3&&!cheer;
-    worker(110,600,1,P(B,X,{ra:-1.2-ext*.6,headTilt:pdrink?-.3:0}));
-    worker(290,600,1,PO(B,X,{la:1.2+ext*.6,headTilt:ydrink?.3:0}));
-    const pcx=162+ext*24,ycx=238-ext*24,cy=505-ext*14;
-    drinkCup(pdrink?132:pcx,pdrink?470:cy,plv,pdrink?-.6:.15*ext);
-    drinkCup(ydrink?268:ycx,ydrink?470:cy,ylv,ydrink?.6:-.15*ext);
-    if(cheer&&isOK(cheer)&&B>=cheer.rt&&B-cheer.rt<.5){burst(200,cy-10,'乾杯！',(B-cheer.rt)/.5);}
-    for(const n of X.ns)if(n.res==='miss'&&B>=n.rt&&B-n.rt<.1&&(st.pmessB==null||st.pmessB<n.rt)){st.pmessB=n.rt;st.pmessCol='rgba(201,138,75,.92)';}
-    if(recent(B,st.pmessB,.8)){const d=B-st.pmessB;c.fillStyle=`rgba(201,138,75,${1-d/.8})`;for(let k=0;k<8;k++)circ(290+Math.cos(k)*d*90,470-Math.abs(Math.sin(k*2))*d*120+d*d*200,5);}
-    if(ydrink){c.strokeStyle=OUT;c.lineWidth=2;txt('咕嚕',330,360,18,'#fff',OUT,4);}
+    c.fillStyle='#e2452b';c.strokeStyle=OUT;c.lineWidth=3;fsr(30,540,80,56,6);c.fillStyle='#fff';fsr(30,540,80,14,4);txt('冰',70,574,18,'#fff');
+    const pj=st.binB!=null?Math.max(0,1-(B-st.binB)/.3):0;
+    c.save();c.translate(372,600);c.scale(1+pj*.12,1-pj*.1);c.fillStyle='#2b2b2b';c.strokeStyle=OUT;c.lineWidth=3;c.beginPath();c.moveTo(-30,0);c.lineTo(-24,-70);c.lineTo(24,-70);c.lineTo(30,0);c.closePath();c.fill();c.stroke();
+    c.fillStyle='#fff';c.font='900 16px '+FONT;c.textAlign='center';c.fillText(String(st.binN||0),0,-30);c.restore();
+    let handing=false,chug=null;
+    for(const n of X.ns){
+      if(B<n.c-.15||(n.res&&B>n.rt+1.3))continue;
+      if(!n.res||B<n.rt){const p=clamp((B-n.c)/(n.h-n.c));if(p<.35)handing=true;const x=150+(235-150)*easeOut(p),y=470-40*Math.sin(Math.PI*p);drinkCup(x,y,1,.3*(1-p));}
+      else if(isOK(n)){const d=B-n.rt;
+        if(d<.12){chug=n;drinkCup(255,420,1-d/.12,-1.2);}
+        else{const e=d-.12,q=clamp(e/.7);if(q>=1){if(!n.binned){n.binned=1;st.binB=B;st.binN=(st.binN||0)+1;}continue;}
+          drinkCup(255+(372-255)*q,420-260*Math.sin(Math.PI*q)+(530-420)*q,0,e*16);}}
+      else{const d=B-n.rt;if(st.pmessB==null||st.pmessB<n.rt){st.pmessB=n.rt;st.pmessCol='rgba(201,138,75,.92)';}
+        if(d<.8){c.fillStyle=`rgba(201,138,75,${1-d/.8})`;for(let k=0;k<8;k++)circ(280+Math.cos(k)*d*90,470-Math.abs(Math.sin(k*2))*d*120+d*d*200,5);drinkCup(240-d*60,520+d*d*300,.4,d*6);}
+        burst(300,420,'噗！',d/.5);}
+    }
+    worker(110,600,1,P(B,X,{ra:handing?-1.9:-.6,la:.3}));
+    if(!handing)drinkCup(152,520,1,.1);
+    const s=B-R.lastSwing,sw=s>=0&&s<.35;
+    worker(290,600,1,PO(B,X,{la:sw?Math.PI-.3:1.3,ra:sw?Math.PI+.6:-.3,headTilt:sw?.5:0}));
+    if(chug)txt('咕嚕！',300,350,22,'#fff',OUT,5);
+    else if(sw&&s>.12)txt('噗哈～',300,350,20,'#ffd21f',OUT,5);
   }};
 /* ================= 遊戲流程 ================= */
 let R=null,schedTimer=null;
@@ -1365,6 +1447,7 @@ function stopRun(){
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));}
 
 function makeRun(li,t0){
+  if(LEVELS[li].random)LEVELS[li].chart=genRandomChart();
   const L=LEVELS[li],spb=60/L.bpm,ch=buildChart(li);
   const bus=AC.createGain();bus.connect(master);
   const mus=AC.createGain();mus.gain.value=.5;mus.connect(bus);
